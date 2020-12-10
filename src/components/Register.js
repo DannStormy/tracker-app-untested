@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-
+import FlashMessage from 'react-flash-message'
 import axios from 'axios';
 
 
@@ -11,6 +11,7 @@ function Register() {
     const [username, setUsername] = useState("")
     const [password, setPassword] = useState("")
     const [validate, validatePass] = useState("")
+    const [success, setSuccess] = useState(null)
 
 
     const handleSubmit = (e) => {
@@ -25,19 +26,29 @@ function Register() {
         }
 
         if (password !== validate) {
-            alert("Passwords don't match")
+            setSuccess(false);
         }
         console.log(user)
 
         axios.post('http://localhost:5000/users/register', user)
-            .then(res => console.log(`This is the response from /register:${res.data}`))
-
-        window.location = '/login'
+            .then((res) => {
+                console.log(res.data)
+            })
+        setSuccess(true)
+        if (success) {
+            window.location = '/login'
+        }
     }
 
 
     return (
         <div className="container" style={{ marginTop: "5%", width: "50%" }}>
+            {
+                success ?
+                    <FlashMessage duration={5000}>
+                        <strong>I will disapper in 5 seconds!</strong>
+                    </FlashMessage> : null
+            }
             <form onSubmit={handleSubmit} className="p-3 mb-2 bg-gradient-light text-dark">
                 <h4>Register</h4>
                 <div className="form-group">
@@ -47,6 +58,7 @@ function Register() {
                         placeholder="First Name"
                         name="firstName"
                         value={firstName}
+                        required
                         onChange={e => setFirstName(e.target.value)}
                     />
                 </div>
@@ -57,6 +69,7 @@ function Register() {
                         placeholder="Last Name"
                         name="lastName"
                         value={lastName}
+                        required
                         onChange={e => setLastName(e.target.value)}
                     />
                 </div>
@@ -67,6 +80,7 @@ function Register() {
                         placeholder="Age"
                         name="age"
                         value={age}
+                        required
                         onChange={e => setAge(e.target.value)}
                     />
                 </div>
@@ -77,6 +91,7 @@ function Register() {
                         placeholder="Username"
                         name="username"
                         value={username}
+                        required
                         onChange={e => setUsername(e.target.value)}
                     />
                 </div>
@@ -87,6 +102,7 @@ function Register() {
                         placeholder="Password"
                         name="password"
                         value={password}
+                        required
                         onChange={e => setPassword(e.target.value)}
                     />
                 </div>
@@ -97,6 +113,7 @@ function Register() {
                         placeholder="Retype Password"
                         name="validation"
                         value={validate}
+                        required
                         onChange={e => validatePass(e.target.value)}
                     />
                 </div>
